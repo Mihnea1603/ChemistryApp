@@ -6,6 +6,7 @@ MainFrame::MainFrame(const wxString &title):wxFrame(nullptr,wxID_ANY,title,wxDef
     reactionPanel=nullptr;
     theoryPanel=nullptr;
     wxArrayString reactions;
+    reactions.Add("Alegeti reactia:");
     reactions.Add(wxT("FeCl\u2083 + 3NH\u2084SCN \u21CC Fe(SCN)\u2083 + 3NH\u2084Cl"));
     reactions.Add(wxT("CoCl\u2082 + 2KSCN \u21CC Co(SCN)\u2083 + 2KCl"));
     float scaleX=(float)GetSize().GetWidth()/1200;
@@ -21,7 +22,7 @@ MainFrame::MainFrame(const wxString &title):wxFrame(nullptr,wxID_ANY,title,wxDef
     theoryButton->Bind(wxEVT_BUTTON,&MainFrame::PressedTheory,this);
     wxImage::AddHandler(new wxPNGHandler);
     wxBitmap exitBMP=wxBitmap("ExitButton.png",wxBITMAP_TYPE_PNG);
-    wxButton *exitButton=new wxButton(mainPanel,wxID_ANY,wxEmptyString,wxPoint(GetSize().GetWidth()-exitBMP.GetWidth()+15,-1),wxSize(exitBMP.GetWidth()-15,exitBMP.GetHeight()-15));
+    wxButton *exitButton=new wxButton(mainPanel,wxID_ANY,wxEmptyString,wxPoint(GetSize().GetWidth()-exitBMP.GetWidth(),-1),wxSize(exitBMP.GetWidth(),exitBMP.GetHeight()));
     exitButton->SetBitmap(exitBMP);
     exitButton->Bind(wxEVT_BUTTON,&MainFrame::CloseApp,this);
     reactionColours[0][0]=wxColour(255,200,100);
@@ -34,25 +35,28 @@ MainFrame::MainFrame(const wxString &title):wxFrame(nullptr,wxID_ANY,title,wxDef
 
 void MainFrame::ReactionChoice(wxCommandEvent &event)
 {
-    mainPanel->Hide();
-    if(reactionPanel==nullptr)
+    if(choices->GetSelection()!=0)
     {
-        reactionPanel=new ReactionPanel(this,GetSize());
-        reactionPanel->SetDoubleBuffered(true);
-        wxBitmap returnBMP=wxBitmap("ReturnButton.png",wxBITMAP_TYPE_PNG);
-        wxButton *returnButton1=new wxButton(reactionPanel,wxID_ANY,wxEmptyString,wxDefaultPosition,wxSize(returnBMP.GetWidth()-10,returnBMP.GetHeight()-10));
-        returnButton1->SetBitmap(returnBMP);
-        returnButton1->Bind(wxEVT_BUTTON,&MainFrame::ReturnToMainPanel,this);
-        wxBitmap resetBMP=wxBitmap("ResetButton.png",wxBITMAP_TYPE_PNG);
-        wxButton *resetButton=new wxButton(reactionPanel,wxID_ANY,wxEmptyString,wxPoint(GetSize().GetWidth()-resetBMP.GetWidth()+10,-1),wxSize(resetBMP.GetWidth()-10,resetBMP.GetHeight()-10));
-        resetButton->SetBitmap(resetBMP);
-        resetButton->Bind(wxEVT_BUTTON,&MainFrame::ResetReaction,this);
+        mainPanel->Hide();
+        if(reactionPanel==nullptr)
+        {
+            reactionPanel=new ReactionPanel(this,GetSize());
+            reactionPanel->SetDoubleBuffered(true);
+            wxBitmap returnBMP=wxBitmap("ReturnButton.png",wxBITMAP_TYPE_PNG);
+            wxButton *returnButton1=new wxButton(reactionPanel,wxID_ANY,wxEmptyString,wxDefaultPosition,wxSize(returnBMP.GetWidth(),returnBMP.GetHeight()));
+            returnButton1->SetBitmap(returnBMP);
+            returnButton1->Bind(wxEVT_BUTTON,&MainFrame::ReturnToMainPanel,this);
+            wxBitmap resetBMP=wxBitmap("ResetButton.png",wxBITMAP_TYPE_PNG);
+            wxButton *resetButton=new wxButton(reactionPanel,wxID_ANY,wxEmptyString,wxPoint(GetSize().GetWidth()-resetBMP.GetWidth(),-1),wxSize(resetBMP.GetWidth(),resetBMP.GetHeight()));
+            resetButton->SetBitmap(resetBMP);
+            resetButton->Bind(wxEVT_BUTTON,&MainFrame::ResetReaction,this);
+        }
+        else
+        {
+            reactionPanel->Show();
+        }
+        reactionPanel->InitializeReaction(choices->GetString(choices->GetSelection()),reactionColours[choices->GetSelection()-1]);
     }
-    else
-    {
-        reactionPanel->Show();
-    }
-    reactionPanel->InitializeReaction(choices->GetString(choices->GetSelection()),reactionColours[choices->GetSelection()]);
 }
 void MainFrame::PressedTheory(wxCommandEvent &event)
 {
@@ -61,7 +65,7 @@ void MainFrame::PressedTheory(wxCommandEvent &event)
     {
         theoryPanel=new TheoryPanel(this,GetSize());
         wxBitmap returnBMP=wxBitmap("ReturnButton.png",wxBITMAP_TYPE_PNG);
-        wxButton *returnButton2=new wxButton(theoryPanel,wxID_ANY,wxEmptyString,wxDefaultPosition,wxSize(returnBMP.GetWidth()-10,returnBMP.GetHeight()-10));
+        wxButton *returnButton2=new wxButton(theoryPanel,wxID_ANY,wxEmptyString,wxDefaultPosition,wxSize(returnBMP.GetWidth(),returnBMP.GetHeight()));
         returnButton2->SetBitmap(returnBMP);
         returnButton2->Bind(wxEVT_BUTTON,&MainFrame::ReturnToMainPanel,this);
     }
@@ -75,6 +79,7 @@ void MainFrame::ReturnToMainPanel(wxCommandEvent &event)
     if(reactionPanel!=nullptr)
     {
         reactionPanel->Hide();
+        choices->SetSelection(0);
     }
     if(theoryPanel!=nullptr)
     {
@@ -84,7 +89,7 @@ void MainFrame::ReturnToMainPanel(wxCommandEvent &event)
 }
 void MainFrame::ResetReaction(wxCommandEvent &event)
 {
-    reactionPanel->InitializeReaction(choices->GetString(choices->GetSelection()),reactionColours[choices->GetSelection()]);
+    reactionPanel->InitializeReaction(choices->GetString(choices->GetSelection()),reactionColours[choices->GetSelection()-1]);
     reactionPanel->Refresh();
 }
 void MainFrame::CloseApp(wxCommandEvent &event)

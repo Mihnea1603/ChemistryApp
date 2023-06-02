@@ -30,7 +30,7 @@ void TheoryPanel::DrawTheoryPanel(wxPaintEvent &event)
                         "numarului de moli de gaz: cresterea presiunii va deplasa echilibrul chimic in directia in care se "
                         "afla mai putini moli de gaz, iar micsorarea presiunii deplaseaza echilibrul chimic in directia in "
                         "care se afla mai multi moli de gaz.";
-    int y=150*scaleY;
+    int y=130*scaleY;
     DrawParagraph(theoryPanel,paragraph1,125*scaleX,y);
     DrawParagraph(theoryPanel,paragraph2,125*scaleX,y);
 }

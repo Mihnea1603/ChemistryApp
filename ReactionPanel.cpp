@@ -5,20 +5,23 @@ ReactionPanel::ReactionPanel(wxWindow *parent,const wxSize &size):wxPanel(parent
     background=wxBitmap("Background.bmp",wxBITMAP_TYPE_BMP);
     scaleX=(float)GetSize().GetWidth()/1200;
     scaleY=(float)GetSize().GetHeight()/720;
-    hintBox=wxRect(GetSize().GetWidth()-200*scaleX,50*scaleY,180*scaleX,90*scaleX);
+    hintBox=wxRect(GetSize().GetWidth()-200*scaleX,80*scaleY,180*scaleX,80*scaleX);
     for(int i=0; i<4; i++)
     {
         tubes[i].timer=nullptr;
-        tubes[i].rect=wxRect((30+130*i)*scaleX,70*scaleY,100*scaleX,600*scaleY);
+        tubes[i].colour=wxColour(0,0,0);
+        tubes[i].rect=wxRect((30+130*i)*scaleX,80*scaleY,100*scaleX,600*scaleY);
         if(i<3)
         {
-            jars[i].rect=wxRect((660+180*i)*scaleX,150*scaleY,150*scaleX,500*scaleY);
+            jars[i].colour=wxColour(0,0,0);
+            jars[i].rect=wxRect((660+180*i)*scaleX,180*scaleY,150*scaleX,500*scaleY);
         }
     }
     jars[0].equilibriumChange=jars[1].equilibriumChange=1;
     jars[2].equilibriumChange=-1;
     jars[0].brush=wxBRUSHSTYLE_SOLID;
     jars[1].brush=jars[2].brush=wxBRUSHSTYLE_TRANSPARENT;
+    pipette.colour=wxColour(0,0,0);
     Bind(wxEVT_PAINT,&ReactionPanel::DrawReactionPanel,this);
     Bind(wxEVT_LEFT_DOWN,&ReactionPanel::MouseClick,this);
     Bind(wxEVT_LEFT_DCLICK,&ReactionPanel::MouseDoubleClick,this);
